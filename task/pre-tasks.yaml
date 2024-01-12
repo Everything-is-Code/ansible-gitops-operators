@@ -1,22 +1,29 @@
 ---
-- name: Check if kube.config file exists
-  ansible.builtin.stat:
-      path: files/config/kube.config
-  register: kubeconfig_exists
+- block:
+  - name: Check if kube.config file exists
+    ansible.builtin.stat:
+        path: files/config/kube.config
+    register: kubeconfig_exists
 
-- name: Add Kubeconfig file
-  ansible.builtin.debug:
-      msg: "Add the kube.config in the correct folder"
-  when: not kubeconfig_exists.stat.exists
+  - name: Add Kubeconfig file
+    ansible.builtin.debug:
+        msg: "Add the kube.config in the correct folder"
+    when: not kubeconfig_exists.stat.exists
 
-- name: Check if OC cli file exists
-  ansible.builtin.stat:
-      path: files/binary/oc
-  register: oc_exists
+  - name: Check if OC cli file exists
+    ansible.builtin.stat:
+        path: files/binary/oc
+    register: oc_exists
 
-- name: Unarchive the OC cli that needs to be downloaded (added in 2.0) can be commentend if you placed the OC cli
-  ansible.builtin.unarchive:
-      src: "{{ oc_cli_url }}"
-      dest: files/binary/
-      remote_src: true
-  when: not oc_exists.stat.exists
+  - name: Unarchive the OC cli that needs to be downloaded (added in 2.0) can be commentend if you placed the OC cli
+    ansible.builtin.unarchive:
+        src: "{{ oc_cli_url }}"
+        dest: files/binary/
+        remote_src: true
+    when: not oc_exists.stat.exists
+
+  - name: Create TMP folder
+    ansible.builtin.file:
+        path: files/tmp
+        state: directory
+        mode: "0775"

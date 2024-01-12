@@ -1,0 +1,6 @@
+---
+- block:
+  - name: Delete Thanos Object Storage Template
+    ansible.builtin.file:
+        path: files/tmp
+        state: absent

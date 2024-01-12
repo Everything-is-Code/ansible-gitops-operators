@@ -3,17 +3,15 @@
   hosts: localhost
   vars:
     platform: "aws"
+  vars_files:
+    - default.yaml
+    - "{{ platform }}.yaml"
   pre_tasks:
     - name: Do Pre Task for pre requisites for playbook
       ansible.builtin.include_tasks: task/pre-tasks.yaml
-    - name: Import Default Variables
-      ansible.builtin.include_vars:
-        files:
-          - default.yaml
-          - "{{ platform }}.yaml"
   tasks:
     - name: Create Storage Class and MachineSet
-      ansible.builtin.include_tasks: task/machineset-install.yaml
+      ansible.builtin.include_tasks: task/machineset-{{ platform }}-install.yaml
 
     - name: Install Advance Cluster Management using ArgoCD
       ansible.builtin.include_tasks: task/acm-install.yaml
@@ -26,3 +24,6 @@
 
     - name: Install the Quay Operator and registry using ArgoCD
       ansible.builtin.include_tasks: task/quay-install.yaml
+
+    - name: Cleanup
+      ansible.builtin.include_tasks: task/cleanup.yaml

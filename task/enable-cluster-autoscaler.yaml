@@ -1,5 +1,6 @@
 ---
-- name: Define clusterautoscaler
-  k8s:
-    state: present
-    definition: "{{ lookup('template', 'clusterautoscaler.yaml.j2') | from_yaml }}"
+- block:
+  - name: Define clusterautoscaler
+    k8s:
+      state: present
+      definition: "{{ lookup('template', 'clusterautoscaler.yaml.j2') | from_yaml }}"

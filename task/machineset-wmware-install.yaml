@@ -1,0 +1,46 @@
+---
+- block:
+  - name: Install Storage-Class
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: files/tmp{{ platform }}-thin-odf.yaml
+        state: present
+    when: platform != ""
+
+  - name: Get Values for machineSet
+    ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          {{ oc }} get $(oc get machineset -n openshift-machine-api -o \
+          name|grep worker|head -n 1) -n openshift-machine-api -o  \
+          jsonpath='{.spec.template.spec.providerSpec.value.template}'
+    register: machineset_template
+    changed_when: machineset_template.rc
+    when: platform != ""
+
+  - name: Install MachineSet
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: ztp/machineset.yaml
+        state: present
+    when: platform != ""
+
+  - name: Wait for ODF node start
+    ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          while ! {{ oc }} get machineset/hub-infra-odf -n openshift-machine-api -o jsonpath="{.status.readyReplicas}" 2>/dev/null| grep 3 ; do \
+            sleep 5
+          done
+    register: argocd_ready
+    changed_when: argocd_ready
+    when: platform != ""
+
+  - name: Install ArgoCD
+    ansible.builtin.include_tasks: task/argocd-install.yaml
+
+  - name: Add Repo to ArgoCD
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: ztp/repo-secret.yaml
+        state: present

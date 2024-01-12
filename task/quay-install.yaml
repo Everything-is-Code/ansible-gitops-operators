@@ -1,24 +1,25 @@
 ---
-- name: Install the Quay Operator and registry using ArgoCD
-  redhat.openshift.k8s:
-      kubeconfig: config/kube.config
-      src: argocd-apps/00_quay-appset.yaml
-      state: present
+- block:
+  - name: Install the Quay Operator and registry using ArgoCD
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: argocd-apps/00_quay-appset.yaml
+        state: present
 
-- name: Wait for Quay Registry to be created
-  ansible.builtin.shell:
-      cmd: |
-        while ! {{ oc }} wait QuayRegistry quay -n registry --for=condition=available --timeout=600s; do \
-          sleep 5
-        done
-  register: quay_ready
-  changed_when: quay_ready
+  - name: Wait for Quay Registry to be created
+    ansible.builtin.shell:
+        cmd: |
+          while ! {{ oc }} wait QuayRegistry quay -n registry --for=condition=available --timeout=600s; do \
+            sleep 5
+          done
+    register: quay_ready
+    changed_when: quay_ready
 
-- name: Wait for Quay registry to be Ready
-  ansible.builtin.shell:
-      cmd: |
-        while ! {{ oc }} wait deployment quay-quay-app -n registry --for=condition=available --timeout=600s; do \
-          sleep 5
-        done
-  register: quay_ready
-  changed_when: quay_ready
+  - name: Wait for Quay registry to be Ready
+    ansible.builtin.shell:
+        cmd: |
+          while ! {{ oc }} wait deployment quay-quay-app -n registry --for=condition=available --timeout=600s; do \
+            sleep 5
+          done
+    register: quay_ready
+    changed_when: quay_ready

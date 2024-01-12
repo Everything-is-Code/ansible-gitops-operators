@@ -1,29 +1,30 @@
 ---
-- name: Install ArgoCD Step 1 - Create Namespace
-  redhat.openshift.k8s:
-      kubeconfig: config/kube.config
-      src: argocd/00-argocd-namespace.yaml
-      namespace: openshift-gitops
-      state: present
+- block:
+  - name: Install ArgoCD Step 1 - Create Namespace
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: argocd/00-argocd-namespace.yaml
+        namespace: openshift-gitops
+        state: present
 
-- name: Install ArgoCD Step 2 - Create RBAC
-  redhat.openshift.k8s:
-      kubeconfig: config/kube.config
-      src: argocd/01-argocd-rbac.yaml
-      state: present
+  - name: Install ArgoCD Step 2 - Create RBAC
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: argocd/01-argocd-rbac.yaml
+        state: present
 
-- name: Install ArgoCD Step 3 - Create Subscription
-  redhat.openshift.k8s:
-      kubeconfig: config/kube.config
-      src: argocd/01-argocd-subscription.yaml
-      state: present
+  - name: Install ArgoCD Step 3 - Create Subscription
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: argocd/01-argocd-subscription.yaml
+        state: present
 
 
-- name: Wait for ArgoCD to finish deploying
-  ansible.builtin.shell:
-      cmd: |
-        while ! {{ oc }} wait pods --all --namespace=openshift-gitops --for=condition=Ready --timeout=600s >/dev/null; do \
-          sleep 5
-        done
+  - name: Wait for ArgoCD to finish deploying
+    ansible.builtin.shell:
+        cmd: |
+          while ! {{ oc }} wait pods --all --namespace=openshift-gitops --for=condition=Ready --timeout=600s >/dev/null; do \
+            sleep 5
+          done
   register: argocd_ready
   changed_when: argocd_ready
