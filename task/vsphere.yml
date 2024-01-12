@@ -1,0 +1,42 @@
+- name: Define custom machinesets
+  include_tasks: vphere-machineset-group.yml
+  loop: "{{ ocp4_machineset_config_groups }}"
+  loop_control:
+    label: "{{ machineset_group.name }}"
+    loop_var: machineset_group
+  vars:
+
+    vphere_tags: >-
+      {{ machineset_group.vphere_tags
+       | default(ocp4_machineset_config_vphere_tags)
+       | default(reference_provider_tags)
+       | combine({'kubernetes.io/cluster/' ~ cluster_infra_id: 'owned'})
+      }}
+    cluster_infra_id: >-
+      {{ ocp4_machineset_config_cluster_infra_id }}
+    reference_provider_spec_value: >-
+      {{ default_worker_machinesets
+       | json_query('[0].spec.template.spec.providerSpec.value')
+       | default({}, True)
+      }}
+
+    reference_provider_tags: >-
+      {{ reference_provider_spec_value.tags
+       | default([])
+       | items2dict(key_name='name', value_name='value')
+      }}
+    user_data_secret: >-
+      {{ machineset_group.vphere_user_data_secret
+       | default('worker-user-data')
+      }}
+
+    vphere_query: >-
+      [].{
+        "datacenter": spec.template.spec.providerSpec.value.workspace.datacenter
+        "datastore": spec.template.spec.providerSpec.value.workspace.datastore
+        "folder": spec.template.spec.providerSpec.value.workspace.folder
+        "resourcePool": spec.template.spec.providerSpec.value.workspace.resourcePool
+        "server": spec.template.spec.providerSpec.value.workspace.server
+        "network": spec.template.spec.providerSpec.value.network.devices[0].networkName
+        "template": spec.template.spec.providerSpec.value.template
+      }

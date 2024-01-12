@@ -1,0 +1,60 @@
+---
+- name: Get machinesets
+  redhat.openshift.k8s:
+    kubeconfig: ../files/config/kube.config
+    api_version: machine.openshift.io/v1beta1
+    kind: MachineSet
+    namespace: openshift-machine-api
+  register: r_get_machinesets
+
+# - name: Get Values for machineSet ALTERNATIVA
+#   ansible.builtin.shell:
+#     cmd: |
+#       set -o pipefail
+#       {{ oc }} get $(oc get machineset -n openshift-machine-api -o name|grep worker|head -n 1) -n openshift-machine-api -o  jsonpath='{.spec.template.spec.providerSpec.value.template}'
+#   register: machineset_template
+#   changed_when: r_get_machinesets
+
+
+- name: Set default_worker_machinesets
+  ansible.builtin.set_fact:
+    current_machinesets: >-
+      {{ r_get_machinesets.resources }}
+    current_machineset_names: >-
+      {{ r_get_machinesets.resources
+       | json_query('[].metadata.name')
+      }}
+    default_worker_machinesets: >-
+      {{ r_get_machinesets.resources
+       | json_query(default_worker_machineset_json_query)
+      }}
+  vars:
+    default_worker_machineset_json_query: >-
+      [?!contains(keys(metadata.labels), '{{ machineset_group_label }}')]
+
+- name: Set cluster facts
+  ansible.builtin.set_fact:
+    ocp4_machineset_config_cluster_infra_id: >-
+      {{ reference_machineset.metadata.labels['machine.openshift.io/cluster-api-cluster'] }}
+    ocp4_machineset_config_cloud_provider: >-
+      {{ reference_provider_spec_value.apiVersion
+       | regex_replace('providerconfig\.openshift\.io/v1beta1', '')
+      }}
+  vars:
+    reference_machineset: >-
+      {{ default_worker_machinesets[0] | default({}) }}
+    reference_provider_spec_value: >-
+      {{ reference_machineset
+       | json_query('spec.template.spec.providerSpec.value')
+      }}
+  when: default_worker_machinesets
+
+- name: Fail if ocp4_machineset_config_cloud_provider is undefined
+  fail:
+    msg: ocp4_machineset_config_cloud_provider is required
+  when: ocp4_machineset_config_cloud_provider is undefined
+
+- name: Fail if ocp4_machineset_config_cluster_infra_id is undefined
+  fail:
+    msg: ocp4_machineset_config_cluster_infra_id is required
+  when: ocp4_machineset_config_cluster_infra_id is undefined

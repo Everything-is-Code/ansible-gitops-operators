@@ -1,0 +1,28 @@
+- name: Set MachineSet Facts
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    oc: "../files/binary/oc"
+    ocp4_machineset_config_cloud_provider: "aws"
+    ocp4_machineset_config_disable_default_worker_machinesets: false
+    ocp4_machineset_config_groups:
+      - name: infra
+        autoscale: true
+        role: infra
+        total_replicas_min: 3
+        total_replicas_max: 30
+      - name: infra-odf
+        role: infra
+        total_replicas: 3
+  tasks:
+    - name: Set machineset facts
+      ansible.builtin.include_tasks: set-facts.yml
+#
+#    - name: Configure machinesets for cloud provider
+#      include_tasks: "{{ ocp4_machineset_config_cloud_provider }}.yml"
+
+#    - name: Enable cluster autoscaler
+#      include_tasks: enable-cluster-autoscaler.yml
+#      when: >-
+#       ocp4_machineset_config_groups | json_query('[?autoscale]')

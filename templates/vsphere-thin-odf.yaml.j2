@@ -1,0 +1,9 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: {{ storage_cass }}
+provisioner: {{ storage_provisioner }}
+parameters:
+  datastore: {{ vmware_datastore }}
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

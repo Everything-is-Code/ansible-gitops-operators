@@ -1,0 +1,9 @@
+# Exclude kube config
+
+*kube.config*
+files/kube.config
+files/binary/oc
+files/ztp/repo-secret.yaml
+.vscode
+.idea
+files/binary/oc

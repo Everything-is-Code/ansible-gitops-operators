@@ -1,0 +1,4 @@
+---
+collections:
+  - name: redhat.openshift
+    version: 3.0.1

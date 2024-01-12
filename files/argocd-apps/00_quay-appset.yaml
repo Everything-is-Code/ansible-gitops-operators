@@ -1,0 +1,46 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  name: quay
+  namespace: openshift-gitops
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  sourceRepos:
+  - '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: quay
+  namespace: openshift-gitops
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"  
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: in-cluster
+  template:
+    metadata:
+      name: quay-{{cluster}}
+    spec:
+      project: quay
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+      source:
+        repoURL: git@bitbucket.org:la-segunda/zeroTouchProvisioning.git
+        targetRevision: main
+        path: components/quay-operator/aggregate/
+
+      destination:
+        server: https://kubernetes.default.svc
