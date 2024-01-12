@@ -6,4 +6,4 @@ build_arg_defaults:
 ansible_config: /etc/ansible/ansible.cfg
 
 dependencies:
-  galaxy: requirements.yml
+  galaxy: requirements.yaml

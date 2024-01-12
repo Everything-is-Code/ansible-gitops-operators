@@ -17,12 +17,12 @@
         total_replicas: 3
   tasks:
     - name: Set machineset facts
-      ansible.builtin.include_tasks: set-facts.yml
+      ansible.builtin.include_tasks: set-facts.yaml
 #
 #    - name: Configure machinesets for cloud provider
-#      include_tasks: "{{ ocp4_machineset_config_cloud_provider }}.yml"
+#      include_tasks: "{{ ocp4_machineset_config_cloud_provider }}.yaml"
 
 #    - name: Enable cluster autoscaler
-#      include_tasks: enable-cluster-autoscaler.yml
+#      include_tasks: enable-cluster-autoscaler.yaml
 #      when: >-
 #       ocp4_machineset_config_groups | json_query('[?autoscale]')

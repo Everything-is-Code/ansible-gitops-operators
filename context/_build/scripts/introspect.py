@@ -8,7 +8,7 @@ import requirements
 import importlib.metadata
 
 base_collections_path = '/usr/share/ansible/collections'
-default_file = 'execution-environment.yml'
+default_file = 'execution-environment.yaml'
 logger = logging.getLogger(__name__)
 
 
@@ -58,7 +58,7 @@ def process_collection(path):
     collection install path given.
     Both items returned are a list of dependencies.
 
-    :param str path: root directory of collection (this would contain galaxy.yml file)
+    :param str path: root directory of collection (this would contain galaxy.yaml file)
     """
     CD = CollectionDefinition(path)
 
@@ -89,7 +89,7 @@ def process(data_dir=base_collections_path, user_pip=None, user_bindep=None):
                 if not os.path.isdir(collection_dir):
                     continue
                 files_list = os.listdir(collection_dir)
-                if 'galaxy.yml' in files_list or 'MANIFEST.json' in files_list:
+                if 'galaxy.yaml' in files_list or 'MANIFEST.json' in files_list:
                     paths.append(collection_dir)
 
     # populate the requirements content

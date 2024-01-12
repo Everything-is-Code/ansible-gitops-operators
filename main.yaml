@@ -24,34 +24,15 @@
       machineset_kind: ""
       machineset_memory: ""
       machineset_network_name: ""
-      machineset_corespersocket
-      machineset_cpu
-      machineset_cluster_name
+      machineset_corespersocket: ""
+      machineset_cpu: ""
+      machineset_cluster_name: ""
 
 
   pre_tasks:
 
-      - name: Check if kube.config file exists
-        ansible.builtin.stat:
-            path: files/config/kube.config
-        register: kubeconfig_exists
-
-      - name: Add Kubeconfig file
-        ansible.builtin.debug:
-            msg: "Add the kube.config in the correct folder"
-        when: not kubeconfig_exists.stat.exists
-
-      - name: Check if OC cli file exists
-        ansible.builtin.stat:
-            path: files/binary/oc
-        register: oc_exists
-
-      - name: Unarchive the OC cli that needs to be downloaded (added in 2.0) can be commentend if you placed the OC cli
-        ansible.builtin.unarchive:
-            src: "{{ oc_cli_url }}"
-            dest: files/binary/
-            remote_src: true
-        when: not oc_exists.stat.exists
+      - name: Do Pre Task for pre requisites for playbook
+        ansible.builtin.include_tasks: task/pre-tasks.yaml
 
   tasks:
 
@@ -91,34 +72,8 @@
         changed_when: argocd_ready
         when: platform != ""
 
-      - name: Install ArgoCD Step 1 - Create Namespace
-        redhat.openshift.k8s:
-            kubeconfig: config/kube.config
-            src: argocd/00-argocd-namespace.yaml
-            namespace: openshift-gitops
-            state: present
-
-      - name: Install ArgoCD Step 2 - Create RBAC
-        redhat.openshift.k8s:
-            kubeconfig: config/kube.config
-            src: argocd/01-argocd-rbac.yaml
-            state: present
-
-      - name: Install ArgoCD Step 3 - Create Subscription
-        redhat.openshift.k8s:
-            kubeconfig: config/kube.config
-            src: argocd/01-argocd-subscription.yaml
-            state: present
-
-
-      - name: Wait for ArgoCD to finish deploying
-        ansible.builtin.shell:
-            cmd: |
-              while ! {{ oc }} wait pods --all --namespace=openshift-gitops --for=condition=Ready --timeout=600s >/dev/null; do \
-                sleep 5
-              done
-        register: argocd_ready
-        changed_when: argocd_ready
+      - name: Install ArgoCD
+        ansible.builtin.include_tasks: task/argocd-install.yaml
 
       - name: Add Repo to ArgoCD
         redhat.openshift.k8s:

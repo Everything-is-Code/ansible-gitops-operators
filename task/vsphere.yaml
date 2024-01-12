@@ -1,5 +1,5 @@
 - name: Define custom machinesets
-  include_tasks: vphere-machineset-group.yml
+  include_tasks: vphere-machineset-group.yaml
   loop: "{{ ocp4_machineset_config_groups }}"
   loop_control:
     label: "{{ machineset_group.name }}"
