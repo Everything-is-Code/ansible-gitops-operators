@@ -1,37 +1,18 @@
 ---
 - name: Install GitOps Operators
   hosts: localhost
-  vars:
-      oc_cli_url: "url_for_cli download"
-      oc: "./files/binary/oc"
-      thanos_ns: "open-cluster-management-observability"
-      thanos_bc: "obc-open-cluster-management-observability-thanos-bc"
-      access_key: "your_key"
-      secret_key: "your_secret"
-      noobaa_secret: "noobaa-aws-cloud-creds-secret"
-      platform: ""
-      storage_cass: ""
-      storage_provisioner: ""
-      vmware_datastore: ""
-      git_repository: ""
-      git_url: ""
-      git_private_key: ""
-      machineset_api_cluster: ""
-      machineset_name: ""
-      machineset_replicas: "3"
-      machineset_credentials_secret: ""
-      machineset_disk: ""
-      machineset_kind: ""
-      machineset_memory: ""
-      machineset_network_name: ""
-      machineset_corespersocket: ""
-      machineset_cpu: ""
-      machineset_cluster_name: ""
-
   pre_tasks:
 
       - name: Do Pre Task for pre requisites for playbook
         ansible.builtin.include_tasks: task/pre-tasks.yaml
+
+      - name: Import Variables
+        ansible.builtin.include_vars:
+            file: default.yaml
+
+      - name: Import Variables
+        ansible.builtin.include_vars:
+            file: vmware.yaml
 
   tasks:
 
