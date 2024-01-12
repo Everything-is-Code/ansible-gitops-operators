@@ -2,7 +2,7 @@
 - name: Install Infra Nodes and GitOps Operators
   hosts: localhost
   vars:
-    platform: ""
+    platform: "aws"
   pre_tasks:
     - name: Do Pre Task for pre requisites for playbook
       ansible.builtin.include_tasks: task/pre-tasks.yaml
