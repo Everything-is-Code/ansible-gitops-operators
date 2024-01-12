@@ -1,32 +1,32 @@
 ---
-- name: Install GitOps Operators
+- name: Install Infra Nodes and GitOps Operators
   hosts: localhost
+  vars:
+    - platform: ""
   pre_tasks:
 
-      - name: Do Pre Task for pre requisites for playbook
-        ansible.builtin.include_tasks: task/pre-tasks.yaml
+    - name: Do Pre Task for pre requisites for playbook
+      ansible.builtin.include_tasks: task/pre-tasks.yaml
 
-      - name: Import Variables
-        ansible.builtin.include_vars:
-            file: default.yaml
-
-      - name: Import Variables
-        ansible.builtin.include_vars:
-            file: vmware.yaml
+    - name: Import Default Variables
+      ansible.builtin.include_vars:
+        files:
+          - default.yaml
+          - "{{ platform }}.yaml"
 
   tasks:
 
-      - name: Create Storage Class and MachineSet
-        ansible.builtin.include_tasks: task/machineset-install.yaml
+    - name: Create Storage Class and MachineSet
+      ansible.builtin.include_tasks: task/machineset-install.yaml
 
-      - name: Install Advance Cluster Management using ArgoCD
-        ansible.builtin.include_tasks: task/acm-install.yaml
+    - name: Install Advance Cluster Management using ArgoCD
+      ansible.builtin.include_tasks: task/acm-install.yaml
 
-      - name: Install the ODF Operator using ArgoCD
-        ansible.builtin.include_tasks: task/odf-install.yaml
+    - name: Install the ODF Operator using ArgoCD
+      ansible.builtin.include_tasks: task/odf-install.yaml
 
-      - name: Install Observability using ArgoCD
-        ansible.builtin.include_tasks: task/obs-install.yaml
+    - name: Install Observability using ArgoCD
+      ansible.builtin.include_tasks: task/obs-install.yaml
 
-      - name: Install the Quay Operator and registry using ArgoCD
-        ansible.builtin.include_tasks: task/quay-install.yaml
+    - name: Install the Quay Operator and registry using ArgoCD
+      ansible.builtin.include_tasks: task/quay-install.yaml
