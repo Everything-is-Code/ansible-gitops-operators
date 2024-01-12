@@ -1,0 +1,15 @@
+---
+- name: Install Advance Cluster Management using ArgoCD
+  redhat.openshift.k8s:
+      kubeconfig: config/kube.config
+      src: argocd-apps/00_acm-appset.yaml
+      state: present
+
+- name: Wait for ACM to finish installing
+  ansible.builtin.shell:
+      cmd: |
+        while ! {{ oc }} wait mce multiclusterengine --for=condition=available --timeout=1500s >/dev/null; do \
+          sleep 5
+        done
+  register: acm_ready
+  changed_when: acm_ready

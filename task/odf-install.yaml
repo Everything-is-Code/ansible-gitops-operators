@@ -1,0 +1,24 @@
+---
+- name: Install the ODF Operator using ArgoCD
+  redhat.openshift.k8s:
+      kubeconfig: config/kube.config
+      src: argocd-apps/00_odf-appset.yaml
+      state: present
+
+- name: Wait for ODF object storage bucket to be created
+  ansible.builtin.shell:
+      cmd: |
+        while ! {{ oc }} wait StorageSystem ocs-storagecluster-storagesystem -n openshift-storage --for=condition=available --timeout=600s; do \
+          sleep 5
+        done
+  register: odf_ready
+  changed_when: odf_ready
+
+- name: Wait for ODF object storage bucket to be Ready
+  ansible.builtin.shell:
+      cmd: |
+        while ! {{ oc }} wait StorageSystem ocs-storagecluster-storagesystem -n openshift-storage --for=condition=available --timeout=600s; do \
+          sleep 5
+        done
+  register: odf_ready
+  changed_when: odf_ready
