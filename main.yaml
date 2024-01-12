@@ -2,20 +2,16 @@
 - name: Install Infra Nodes and GitOps Operators
   hosts: localhost
   vars:
-    - platform: ""
+    platform: ""
   pre_tasks:
-
     - name: Do Pre Task for pre requisites for playbook
       ansible.builtin.include_tasks: task/pre-tasks.yaml
-
     - name: Import Default Variables
       ansible.builtin.include_vars:
         files:
           - default.yaml
           - "{{ platform }}.yaml"
-
   tasks:
-
     - name: Create Storage Class and MachineSet
       ansible.builtin.include_tasks: task/machineset-install.yaml
 
