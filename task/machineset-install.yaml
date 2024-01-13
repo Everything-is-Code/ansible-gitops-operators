@@ -1,0 +1,46 @@
+---
+- block:
+
+  - name: Replace template for storage class
+    ansible.builtin.template:
+        src: "{{ platform }}-thin-odf.yaml.j2"
+        dest: "files/tmp/{{ platform }}-thin-odf.yaml"
+        mode: preserve
+
+  - name: Install Storage-Class
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: files/tmp/{{ platform }}-thin-odf.yaml
+        state: present
+
+  - name: Get Values for machineSet
+    ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          {{ oc }} get $(oc get machineset -n openshift-machine-api -o \
+          name|grep worker|head -n 1) -n openshift-machine-api -o  \
+          jsonpath='{.spec.template.spec.providerSpec.value.template}'
+    register: machineset_template
+    changed_when: machineset_template.rc
+
+  - name: Replace template for storage class
+    ansible.builtin.template:
+        src: "{{ platform }}-thin-odf.yaml.j2"
+        dest: "files/tmp/{{ platform }}-machineset.yaml"
+        mode: preserve
+
+  - name: Install MachineSet
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: "files/tmp/{{ platform }}-machineset.yaml"
+        state: present
+
+  - name: Wait for Infra ODF node start
+    ansible.builtin.shell:
+        cmd: |
+          set -o pipefail
+          while ! {{ oc }} get machineset/{{ machineset_cluster_name }} -n openshift-machine-api -o jsonpath="{.status.readyReplicas}" 2>/dev/null| grep 3 ; do \
+            sleep 5
+          done
+    register: infra_odf_node_ready
+    changed_when: infra_odf_node_ready

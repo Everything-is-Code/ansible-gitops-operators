@@ -1,4 +1,4 @@
-storage_cass: ""
+storage_class: ""
 storage_provisioner: ""
 vmware_datastore: ""
 machineset_api_cluster: ""

@@ -5,13 +5,15 @@
     platform: "aws"
   vars_files:
     - default.yaml
-    - "{{ platform }}.yaml"
+    - wmware.yaml
+    - aws.yaml
+    - gcp.yaml
   pre_tasks:
     - name: Do Pre Task for pre requisites for playbook
       ansible.builtin.include_tasks: task/pre-tasks.yaml
   tasks:
     - name: Create Storage Class and MachineSet
-      ansible.builtin.include_tasks: task/machineset-{{ platform }}-install.yaml
+      ansible.builtin.include_tasks: task/machineset-install.yaml
 
     - name: Install Advance Cluster Management using ArgoCD
       ansible.builtin.include_tasks: task/acm-install.yaml

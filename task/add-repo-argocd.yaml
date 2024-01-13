@@ -1,0 +1,7 @@
+---
+- block:
+  - name: Add Repo to ArgoCD
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: ztp/repo-secret.yaml
+        state: present
