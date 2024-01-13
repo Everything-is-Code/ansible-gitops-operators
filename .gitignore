@@ -7,3 +7,4 @@ files/ztp/repo-secret.yaml
 .vscode
 .idea
 files/binary/oc
+tmp/extra-vars.yaml

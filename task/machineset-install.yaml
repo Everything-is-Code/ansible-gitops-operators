@@ -1,6 +1,11 @@
 ---
 - block:
 
+  - name: Import Extra Vars
+    ansible.builtin.include_vars:
+      file: tmp/extra-vars.yaml
+    when: extra-vars
+
   - name: Replace template for storage class
     ansible.builtin.template:
         src: "{{ platform }}-thin-odf.yaml.j2"
