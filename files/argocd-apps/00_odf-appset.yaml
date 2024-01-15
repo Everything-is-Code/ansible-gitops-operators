@@ -40,6 +40,6 @@ spec:
       source:
         repoURL: git@bitbucket.org:la-segunda/zeroTouchProvisioning.git
         targetRevision: main
-        path: components/openshift-data-foundation-operator/aggregate/overlays/vsphere-node-labeler
+        path: components/openshift-data-foundation-operator/aggregate/overlays/vsphere
       destination:
         server: https://kubernetes.default.svc
