@@ -8,3 +8,4 @@ files/ztp/repo-secret.yaml
 .idea
 files/binary/oc
 tmp/extra-vars.yaml
+files/tmp

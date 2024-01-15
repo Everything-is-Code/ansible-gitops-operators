@@ -3,19 +3,19 @@ apiVersion: machine.openshift.io/v1beta1
 kind: MachineSet
 metadata:
   labels:
-    machine.openshift.io/cluster-api-cluster: "{{ machineset_hub }}{{ machineset_api_cluster }}"
-  name: {{ machineset_cluster_name }}
+    machine.openshift.io/cluster-api-cluster: "{{ machineset_hub }}"
+  name: {{ machineset_name }}
   namespace: openshift-machine-api
 spec:
   replicas: {{ machineset_replicas }}
   selector:
     matchLabels:
-      machine.openshift.io/cluster-api-cluster: {{ machineset_name }}
+      machine.openshift.io/cluster-api-cluster: {{ machineset_hub }}
       machine.openshift.io/cluster-api-machineset: {{ machineset_name }}
   template:
     metadata:
       labels:
-        machine.openshift.io/cluster-api-cluster: {{ machineset_name }}
+        machine.openshift.io/cluster-api-cluster: {{ machineset_hub }}
         machine.openshift.io/cluster-api-machine-role: infra
         machine.openshift.io/cluster-api-machine-type: infra
         machine.openshift.io/cluster-api-machineset: {{ machineset_name }}
@@ -54,55 +54,3 @@ spec:
             folder: {{ machineset_workspace_folder }}
             resourcePool: {{ machineset_workspace_resourcePool }}
             server: {{ machineset_workspace_server }}
----
-apiVersion: machine.openshift.io/v1beta1
-kind: MachineSet
-metadata:
-  labels:
-    machine.openshift.io/cluster-api-cluster: {{ machineset_cluster_name }}
-  name: {{ machineset_cluster_name }}
-  namespace: openshift-machine-api
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      machine.openshift.io/cluster-api-cluster: {{ machineset_cluster_name }}
-      machine.openshift.io/cluster-api-machineset: {{ machineset_cluster_name }}
-  template:
-    metadata:
-      labels:
-        machine.openshift.io/cluster-api-cluster: {{ machineset_cluster_name }}
-        machine.openshift.io/cluster-api-machine-role: infra
-        machine.openshift.io/cluster-api-machine-type: infra
-        machine.openshift.io/cluster-api-machineset: {{ machineset_cluster_name }}
-    spec:
-      lifecycleHooks: {}
-      metadata:
-        labels:
-          node-role.kubernetes.io/infra: ""
-      providerSpec:
-        value:
-          apiVersion: machine.openshift.io/v1beta1
-          credentialsSecret:
-            name: {{ machineset_credentials_secret }}
-          diskGiB: {{ machineset_disk }}
-          kind: {{ machineset_kind }}
-          memoryMiB: {{ machineset_memory }}
-          metadata:
-            creationTimestamp: null
-          network:
-            devices:
-            - networkName: {{ machineset_network_name }}
-          numCPUs: {{ machineset_cpu }}
-          numCoresPerSocket: {{ machineset_corespersocket }}
-          snapshot: ""
-          template: "{{ machineset_hub }}-rhcos-generated-region-generated-zone"
-          userDataSecret:
-            name: worker-user-data
-          workspace:
-            datacenter: {{ machineset_workspace_datacenter }}
-            datastore: {{ machineset_workspace_datastore }}
-            folder: {{ machineset_workspace_folder }}
-            resourcePool: {{ machineset_workspace_resourcePool }}
-            server: {{ machineset_workspace_server }}
----              

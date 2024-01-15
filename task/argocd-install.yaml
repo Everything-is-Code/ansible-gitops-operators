@@ -26,5 +26,5 @@
           while ! {{ oc }} wait pods --all --namespace=openshift-gitops --for=condition=Ready --timeout=600s >/dev/null; do \
             sleep 5
           done
-  register: argocd_ready
-  changed_when: argocd_ready
+    register: argocd_ready
+    changed_when: argocd_ready

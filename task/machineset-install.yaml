@@ -3,8 +3,8 @@
 
   - name: Import Extra Vars
     ansible.builtin.include_vars:
-      file: tmp/extra-vars.yaml
-    when: extra-vars
+      file: "tmp/extra-vars.yaml"
+    #when: "extra_vars"
 
   - name: Replace template for storage class
     ansible.builtin.template:
@@ -30,7 +30,7 @@
 
   - name: Replace template for storage class
     ansible.builtin.template:
-        src: "{{ platform }}-thin-odf.yaml.j2"
+        src: "{{ platform }}-machineset.yaml.j2"
         dest: "files/tmp/{{ platform }}-machineset.yaml"
         mode: preserve
 
@@ -44,7 +44,7 @@
     ansible.builtin.shell:
         cmd: |
           set -o pipefail
-          while ! {{ oc }} get machineset/{{ machineset_cluster_name }} -n openshift-machine-api -o jsonpath="{.status.readyReplicas}" 2>/dev/null| grep 3 ; do \
+          while ! {{ oc }} get machineset/{{ machineset_name }} -n openshift-machine-api -o jsonpath="{.status.readyReplicas}" 2>/dev/null| grep 3 ; do \
             sleep 5
           done
     register: infra_odf_node_ready
