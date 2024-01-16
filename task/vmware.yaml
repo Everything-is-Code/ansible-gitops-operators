@@ -1,14 +1,14 @@
 ---
 - block:
   - name: Define custom machinesets
-    include_tasks: vphere-machineset-group.yaml
+    include_tasks: vmware-machineset-group.yaml
     loop: "{{ ocp4_machineset_config_groups }}"
     loop_control:
       label: "{{ machineset_group.name }}"
       loop_var: machineset_group
     vars:
 
-      vphere_tags: >-
+      vsphere_tags: >-
         {{ machineset_group.vphere_tags
         | default(ocp4_machineset_config_vphere_tags)
         | default(reference_provider_tags)

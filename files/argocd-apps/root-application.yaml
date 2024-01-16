@@ -7,11 +7,11 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
   labels:
     app-source: root
-    repo: {{ git_repo }}
+    repo: git@bitbucket.org:la-segunda/zeroTouchProvisioning.git
 spec:
   project: default
   source:
-    repoURL: {{ git_url }}
+    repoURL: git@bitbucket.org:la-segunda/zeroTouchProvisioning.git
     targetRevision: HEAD
     path: clusters/hub
   destination:

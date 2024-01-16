@@ -18,7 +18,7 @@
   - name: Wait for Quay registry to be Ready
     ansible.builtin.shell:
         cmd: |
-          while ! {{ oc }} wait deployment quay-quay-app -n registry --for=condition=available --timeout=600s; do \
+          while ! {{ oc }} wait deployment lasegunda-quay-app  -n registry --for=condition=available --timeout=600s; do \
             sleep 5
           done
     register: quay_ready

@@ -25,11 +25,14 @@
     - name: Install the ODF Operator using ArgoCD
       ansible.builtin.include_tasks: task/odf-install.yaml
 
-    - name: Install Observability using ArgoCD
-      ansible.builtin.include_tasks: task/obs-install.yaml
+#    - name: Install Observability using ArgoCD
+#      ansible.builtin.include_tasks: task/obs-install.yaml
 
     - name: Install the Quay Operator and registry using ArgoCD
       ansible.builtin.include_tasks: task/quay-install.yaml
+
+    - name: Root Application
+      ansible.builtin.include_tasks: task/root-application.yaml
 
     - name: Cleanup
       ansible.builtin.include_tasks: task/cleanup.yaml
