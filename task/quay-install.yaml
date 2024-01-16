@@ -9,7 +9,7 @@
   - name: Wait for Quay Registry to be created
     ansible.builtin.shell:
         cmd: |
-          while ! {{ oc }} wait QuayRegistry quay -n registry --for=condition=available --timeout=600s; do \
+          while ! {{ oc }} wait QuayRegistry lasegunda -n registry --for=condition=available --timeout=600s; do \
             sleep 5
           done
     register: quay_ready

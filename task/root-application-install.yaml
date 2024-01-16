@@ -1,0 +1,9 @@
+---
+- block:
+  - name: Install Advance Cluster Management using ArgoCD
+    redhat.openshift.k8s:
+        kubeconfig: config/kube.config
+        src: argocd-apps/root-application.yaml
+        state: present
+
+
