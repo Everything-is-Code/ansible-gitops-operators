@@ -8,14 +8,14 @@
 
   - name: Replace template for storage class
     ansible.builtin.template:
-        src: "{{ platform }}-thin-odf.yaml.j2"
-        dest: "files/tmp/{{ platform }}-thin-odf.yaml"
+        src: "{{ platform }}-thin-ocs.yaml.j2"
+        dest: "files/tmp/{{ platform }}-thin-ocs.yaml"
         mode: preserve
 
   - name: Install Storage-Class
     redhat.openshift.k8s:
         kubeconfig: config/kube.config
-        src: files/tmp/{{ platform }}-thin-odf.yaml
+        src: files/tmp/{{ platform }}-thin-ocs.yaml
         state: present
 
   - name: Get Values for machineSet
