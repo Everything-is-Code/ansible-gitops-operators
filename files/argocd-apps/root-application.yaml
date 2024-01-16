@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -7,9 +8,11 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
   labels:
     app-source: root
-    repo: git@bitbucket.org:la-segunda/zeroTouchProvisioning.git
+    repo: zeroTouchProvisioning
 spec:
   project: default
+  plugin:
+    name: setenv-cmp-plugin
   source:
     repoURL: git@bitbucket.org:la-segunda/zeroTouchProvisioning.git
     targetRevision: HEAD
@@ -38,3 +41,4 @@ spec:
         duration: 5s # the amount to back off. Default unit is seconds, but could also be a duration (e.g. "2m", "1h")
         factor: 2 # a factor to multiply the base duration after each failed retry
         maxDuration: 3m # the maximum amount of time allowed for the backoff strategy
+---

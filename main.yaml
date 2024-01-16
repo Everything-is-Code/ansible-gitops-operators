@@ -32,7 +32,7 @@
       ansible.builtin.include_tasks: task/quay-install.yaml
 
     - name: Root Application
-      ansible.builtin.include_tasks: task/root-application.yaml
+      ansible.builtin.include_tasks: task/root-application-install.yaml
 
     - name: Cleanup
       ansible.builtin.include_tasks: task/cleanup.yaml
