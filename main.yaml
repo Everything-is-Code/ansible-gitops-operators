@@ -18,13 +18,11 @@
     - name: Install Argo ArgoCD
       ansible.builtin.include_tasks: task/argocd-install.yaml
 
-
     - name: Install Advance Cluster Management using ArgoCD
       ansible.builtin.include_tasks: task/acm-install.yaml
 
     - name: Install the ODF Operator using ArgoCD
       ansible.builtin.include_tasks: task/odf-install.yaml
-
 #    - name: Install Observability using ArgoCD
 #      ansible.builtin.include_tasks: task/obs-install.yaml
 
